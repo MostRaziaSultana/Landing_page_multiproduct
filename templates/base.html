@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ site_settings.site_name }}</title>
+    <link href="https://fonts.cdnfonts.com/css/hind-siliguri" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.css" integrity="sha512-VcyUgkobcyhqQl74HS1TcTMnLEfdfX6BbjhH8ZBjFU9YTwHwtoRtWSGzhpDVEJqtMlvLM2z3JIixUOu63PNCYQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+     <script src="{% static 'js/script.js' %}"></script>
+
+        <!-- font-aswome cdn -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://kit.fontawesome.com/ddee993d4e.js" crossorigin="anonymous"></script>
+     <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <link rel="icon" href="{{ frontend_setting.favicon.url }}" type="favicon">
+
+    <!-- Add GTM Script in the head -->
+    {% if site_settings.gtm_id %}
+    <script>
+      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id=' + i + dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','{{ gtm_id }}');
+    </script>
+    {% endif %}
+
+
+
+{% if messages %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        {% for message in messages %}
+            Swal.fire({
+                icon: "{{ message.tags|default:'info' }}",  // Message tags determine the icon: success, error, warning, etc.
+                title: "{{ message }}",  // Message content
+                confirmButtonText: "OK",  // OK button text
+                confirmButtonColor: "#6C63FF",  // Custom button color
+                timer: 3000,  // Auto-close after 3 seconds
+                showClass: { popup: '' },  // Remove show animation
+                hideClass: { popup: '' }   // Remove hide animation
+            });
+        {% endfor %}
+    });
+</script>
+{% endif %}
+
+
+</head>
+<body>
+
+<!--:::::Navbar :::::::-->
+<nav>
+    <div class="container nav-sec">
+          <a href="/">
+        <img src="{{ frontend_setting.logo.url }}" alt="Logo" style="max-height: 50px;">
+            <a href="#submit-button" class="order-now-btn">এখানে অর্ডার করুন</a>
+          </a>
+
+    </div>
+</nav>
+<!--:::::Navbar Ends:::::::-->
+
+<!--:::::Body:::::::-->
+<div class="container">
+    <div class="row box1">
+        <!--:::::About:::::::-->
+        <div class="content col-6">
+            <h1>{{ banner.banner_title }}</h1>
+            <p>{{ banner.banner_description }}</p>
+            <a href="#order" class="order-now-btn hide-on-mobile">এখানে অর্ডার করুন</a>
+        </div>
+        <div class="video col-6">
+             {% if banner.banner_video_link %}
+            <iframe src="{{ banner.banner_video_link }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            {% else %}
+                <p>No video available.</p>
+            {% endif %}
+        </div>
+        <!--:::::About Ends:::::::-->
+    </div>
+
+
+        <!--:::::Features:::::::-->
+
+    <div class="features box1">
+        {% for section in sections %}
+        <h2>{{ section.title }}</h2>
+        <div class="features-container">
+            {% for feature in section.features.all %}
+            <div class="feature-item">
+                <img src="{{ feature.image.url }}" alt="Icon">
+                <p>{{ feature.title }}</p>
+            </div>
+             {% endfor %}
+            {% endfor %}
+        </div>
+        <a href="#order" class="order-now-btn">এখানে অর্ডার করুন</a>
+    </div>
+
+        <!--:::::Features end:::::::-->
+
+
+   <!--:::::FAQ:::::::-->
+    <div class="faq box1">
+        <h2 class="title">প্রায়শই জিজ্ঞাসিত প্রশ্নাবলী</h2>
+        {% for faq in faqs %}
+        <div class="faq-item">
+            <button class="faq-question" onclick="toggleAnswer(this)">
+                <p style="text-align: left; width: 100%; margin: unset">{{ faq.question }}</p>
+                 <span class="arrow">▲</span>
+            </button>
+            <div class="faq-answer">
+                <p style="text-align: left; width: 100%; margin: unset">{{ faq.answer }}</p>
+            </div>
+        </div>
+        {% endfor %}
+          <a href="#order" class="order-now-btn">অর্ডার করতে এখানে ক্লিক করুন</a>
+    </div>
+
+   <!--:::::FAQ ends:::::::-->
+
+    <!--:::::Product Details:::::::-->
+   <div class="row box1">
+        <div class="content1 col-6">
+            <h2 class="product-title">{{ product.title }}</h2>
+             <p>
+                {{ product.description }}
+            </p>
+             <div class="cost-order">
+                <p class="cost">
+                   {% if product.discount_price %}
+                        Price: <span class="discounted-price">Tk {{ product.discount_price|floatformat:"0" }}</span>
+                        <span class="original-price">Tk {{ product.price|floatformat:"0" }}</span>
+                    {% else %}
+                        Price: <span class="discounted-price">Tk {{ product.price|floatformat:"0" }}</span>
+                    {% endif %}
+                </p>
+                <a href="#order" class="order-now-btn">অর্ডার করতে এখানে ক্লিক করুন</a>
+             </div>
+        </div>
+        <div class="picture col-6">
+            <img src="{{ product.image.url }}" alt="Natural Hair Oil" style="max-width: 100%; height: auto; border-radius: 10px;">
+        </div>
+   </div>
+        <!--:::::Product Details ends:::::::-->
+
+  <!--:::::Order Form and Billing Address :::::::-->
+<form action="{% url 'home' %}" method="POST" class="form-container">
+  <div class="billing-details" id="order">
+    <h2 class="centered-text">
+      অর্ডার করতে আপনার সঠিক তথ্য দিয়ে নিচের ফর্মটি সম্পূর্ণ পূরন করুন।<br />
+      (আগে থেকে কোন টাকা দেয়া লাগবে না। প্রোডাক্ট হাতে পাবার পর টাকা দিবেন)
+    </h2>
+    <div class="row order-form">
+      <div class="form1 col-md-6 col-12 col-sm-12">
+        {% csrf_token %}
+        <input type="hidden" name="product_id" value="{{ product.id }}" />
+        <input type="hidden" name="shipping_cost" id="shipping_cost" value="" />
+        <h4>Billing Details</h4>
+        <label for="name">Name:</label><br />
+        <input
+          type="text"
+          name="name"
+          id="name"
+          placeholder="Enter your name"
+          required
+        /><br />
+
+        <label for="phone">Phone:</label><br />
+        <input
+          type="tel"
+          name="phone"
+          id="phone"
+          placeholder="Enter your phone number"
+          required
+        /><br />
+
+        <label for="city">City:</label><br />
+        <input
+          type="text"
+          name="city"
+          id="city"
+          placeholder="Enter your city"
+          required
+        /><br />
+
+        <label for="address">Address:</label><br />
+        <textarea
+          name="address"
+          id="address"
+          placeholder="Enter your address"
+          rows="3"
+          required
+        ></textarea
+        ><br />
+      </div>
+      <div class="form2 col-md-6 col-12 col-sm-12">
+        <h4>Order Details</h4>
+        <div class="order-details">
+          <table class="details">
+            <tr>
+              <td>
+                <div style="display: flex; align-items: center">
+                  <img
+                    src="{{ product.image.url }}"
+                    alt="product-img"
+                    style="width: 30px; height: 30px; margin-right: 10px"
+                  />
+                  <span>{{ product.title }}</span>
+                </div>
+              </td>
+              <td style="display: flex">
+                {% if product.discount_price %}
+                <span id="price" data-price="{{ product.discount_price }}"
+                  >{{ product.discount_price }}</span
+                >
+                Tk {% else %}
+                <span id="price" data-price="{{ product.price }}"
+                  >{{ product.price }}</span
+                >
+                Tk {% endif %}
+              </td>
+            </tr>
+            <tr>
+              <td>Quantity</td>
+              <td>
+                <div class="quantity-container">
+                  <button
+                    type="button"
+                    class="quantity-button"
+                    onclick="changeQuantity(-1)"
+                  >
+                    -
+                  </button>
+                  <input
+                    type="text"
+                    name="quantity"
+                    id="quantity"
+                    value="1"
+                    class="quantity-input"
+                    readonly
+                  />
+                  <button
+                    type="button"
+                    class="quantity-button"
+                    onclick="changeQuantity(1)"
+                  >
+                    +
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>Subtotal</td>
+              <td id="subtotal">
+                {% if product.discount_price %} {{ product.discount_price }} Tk
+                {% else %} {{ product.price }} Tk {% endif %}
+              </td>
+            </tr>
+            <tr>
+              <td>Shipping</td>
+              <td class="shipping-cost">
+                <div class="radio-group">
+                  <div class="radio-item">
+                    <input
+                      type="radio"
+                      name="shipping"
+                      value="50"
+                      onchange="updateTotal()"
+                    />
+                    <label class="radio-title">ঢাকার ভিতরে: 50 টাকা</label>
+                  </div>
+                  <div class="radio-item">
+                    <input
+                      type="radio"
+                      name="shipping"
+                      value="100"
+                      onchange="updateTotal()"
+                    />
+                    <label class="radio-title">ঢাকার বাহিরে: 100 টাকা</label>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>Total</td>
+              <td id="total">
+                {% if product.discount_price %} {{ product.discount_price }} Tk
+                {% else %} {{ product.price }} Tk {% endif %}
+              </td>
+            </tr>
+          </table>
+        </div>
+        <button
+          type="submit"
+          id="submit-button"
+          class="btn btn-primary"
+          disabled
+        >
+          <span>অর্ডার নিশ্চিত করুন</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</form>
+
+  <!--:::::Order Form and Billing Address Ends:::::::-->
+
+    <div class="order-info">
+        <p class="order-text">অর্ডার করতে অথবা বিস্তারিত জানতে সরাসরি কল করুনঃ</p>
+        <p class="phone-number"><i class="fas fa-phone-alt"></i>{{ businessinfo.phone_no }}</p>
+    </div>
+</div>
+
+
+
+  <!--:::::Footer area START :::::::-->
+<footer class="footer">
+    <div class="container row">
+        <div class="copyright col-10">
+            Copyright © {{ site_settings.copyright_year }} <strong>{{ businessinfo.company_name }}</strong>. All rights reserved. Powered by <a href="https://www.emanagerit.com/" target="_blank"><strong>eManager</strong></a>
+        </div>
+        <div class="social-media col-12 col-md-2">
+            <a href="https://wa.me/{{ businessinfo.whatsapp}}?text=Hello" target="_blank" class="social-icon">
+                <i class="fab fa-whatsapp"></i>
+            </a>
+            <a href="{{ businessinfo.facebook }}" class="social-icon">
+                <span class="fab fa-facebook-square"></span>
+            </a>
+<!--            <a href="#" class="social-icon">-->
+<!--                <i class="fab fa-twitter"></i>-->
+<!--            </a>-->
+<!--            <a href="#" class="social-icon">-->
+<!--                <span class="fab fa-instagram"></span>-->
+<!--            </a>-->
+<!--            <a href="#" class="social-icon">-->
+<!--                <span class="fab fa-youtube"></span>-->
+<!--            </a>-->
+        </div>
+    </div>
+</footer>
+
+  <!--:::::Footer area Ends :::::::-->
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.min.js" integrity="sha512-ykZ1QQr0Jy/4ZkvKuqWn4iF3lqPZyij9iRv6sGqLRdTPkY69YX6+7wvVGmsdBbiIfN/8OdsI7HABjvEok6ZopQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    // Get all radio buttons with the name 'shipping'
+const shippingOptions = document.getElementsByName('shipping');
+
+// Add an event listener to each radio button
+shippingOptions.forEach(option => {
+    option.addEventListener('change', function () {
+        // Get the selected value
+        const shippingCost = document.querySelector('input[name="shipping"]:checked').value;
+
+        // Update the shipping_cost field
+        const shippingCostField = document.getElementById('shipping_cost');
+        shippingCostField.value = shippingCost;
+    });
+});
+</script>
+</body>
+</html>
