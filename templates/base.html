@@ -31,7 +31,8 @@
     </script>
     {% endif %}
 
-
+<meta name="keywords" content="{{ site_settings.keywords }}">
+<meta name="description" content="{{ site_settings.description }}">
 
 {% if messages %}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -115,7 +116,7 @@
         <div class="faq-item">
             <button class="faq-question" onclick="toggleAnswer(this)">
                 <p style="text-align: left; width: 100%; margin: unset">{{ faq.question }}</p>
-                 <span class="arrow">▲</span>
+                <span class="arrow">↻</span>
             </button>
             <div class="faq-answer">
                 <p style="text-align: left; width: 100%; margin: unset">{{ faq.answer }}</p>
@@ -127,29 +128,39 @@
 
    <!--:::::FAQ ends:::::::-->
 
-    <!--:::::Product Details:::::::-->
-   <div class="row box1">
-        <div class="content1 col-6">
-            <h2 class="product-title">{{ product.title }}</h2>
-             <p>
-                {{ product.description }}
-            </p>
-             <div class="cost-order">
-                <p class="cost">
-                   {% if product.discount_price %}
-                        Price: <span class="discounted-price">Tk {{ product.discount_price|floatformat:"0" }}</span>
-                        <span class="original-price">Tk {{ product.price|floatformat:"0" }}</span>
-                    {% else %}
-                        Price: <span class="discounted-price">Tk {{ product.price|floatformat:"0" }}</span>
-                    {% endif %}
-                </p>
-                <a href="#order" class="order-now-btn">অর্ডার করতে এখানে ক্লিক করুন</a>
-             </div>
+
+
+<div class="row products">
+    <h2 class="titl">Our Products</h2>
+     {% for i in products %}
+    <div class="product-card">
+        <div class="product-image">
+            <a href="{{ i.image.url }}">
+                <img src="{{ i.image.url }}" alt="Product Image">
+            </a>
         </div>
-        <div class="picture col-6">
-            <img src="{{ product.image.url }}" alt="Natural Hair Oil" style="max-width: 100%; height: auto; border-radius: 10px;">
+        <div class="product_desc_info">
+            <h4>
+                <a class="product_name" href="{{ i.image.url }}">{{ i.title }}</a>
+            </h4>
+            <div class="price-box">
+                {% if i.discount_price %}
+                    <span class="new-price">Tk {{i.discount_price|floatformat:"0" }}</span>
+                    <span style="text-decoration: line-through; color:  #ff0000;" class="new-price">Tk {{i.price|floatformat:"0" }}</span>
+                {% else %}
+                    <span class="new-price">Tk {{i.price|floatformat:"0" }}</span>
+                {% endif %}
+            </div>
+             <div class="product-actions">
+<!--                <a href="#" class="order-now-btn">Buy Now</a>-->
+               <a href="{% url 'home' %}?product_id={{ i.id }}&session_key={{ request.session.session_key }}" class="add-to-cart-btn">Add to Cart</a>
+            </div>
         </div>
-   </div>
+    </div>
+      {% endfor %}
+</div>
+
+
         <!--:::::Product Details ends:::::::-->
 
   <!--:::::Order Form and Billing Address :::::::-->
@@ -162,7 +173,6 @@
     <div class="row order-form">
       <div class="form1 col-md-6 col-12 col-sm-12">
         {% csrf_token %}
-        <input type="hidden" name="product_id" value="{{ product.id }}" />
         <input type="hidden" name="shipping_cost" id="shipping_cost" value="" />
         <h4>Billing Details</h4>
         <label for="name">Name:</label><br />
@@ -199,73 +209,74 @@
           placeholder="Enter your address"
           rows="3"
           required
-        ></textarea
-        ><br />
+        ></textarea><br />
       </div>
+
       <div class="form2 col-md-6 col-12 col-sm-12">
-        <h4>Order Details</h4>
-        <div class="order-details">
-          <table class="details">
-            <tr>
-              <td>
-                <div style="display: flex; align-items: center">
-                  <img
-                    src="{{ product.image.url }}"
-                    alt="product-img"
-                    style="width: 30px; height: 30px; margin-right: 10px"
-                  />
-                  <span>{{ product.title }}</span>
-                </div>
-              </td>
-              <td style="display: flex">
-                {% if product.discount_price %}
-                <span id="price" data-price="{{ product.discount_price }}"
-                  >{{ product.discount_price }}</span
-                >
-                Tk {% else %}
-                <span id="price" data-price="{{ product.price }}"
-                  >{{ product.price }}</span
-                >
-                Tk {% endif %}
-              </td>
-            </tr>
-            <tr>
-              <td>Quantity</td>
-              <td>
-                <div class="quantity-container">
-                  <button
-                    type="button"
-                    class="quantity-button"
-                    onclick="changeQuantity(-1)"
-                  >
-                    -
-                  </button>
-                  <input
-                    type="text"
-                    name="quantity"
-                    id="quantity"
-                    value="1"
-                    class="quantity-input"
-                    readonly
-                  />
-                  <button
-                    type="button"
-                    class="quantity-button"
-                    onclick="changeQuantity(1)"
-                  >
-                    +
-                  </button>
-                </div>
-              </td>
-            </tr>
+<h4>Order Details</h4>
+<div class="order-details">
+  <table class="details">
+    {% if cart %}
+      {% for product_id, product_data in cart.items %}
+        <tr>
+          <td>
+            <div style="display: flex; align-items: center">
+              <img
+                src="{{ product_data.image }}"
+                alt="product-img"
+                style="width: 30px; height: 30px; margin-right: 10px"
+              />
+              <span>{{ product_data.title }}</span>
+            </div>
+          </td>
+          <td style="display: flex">
+            <span id="price_{{ product_id }}" data-price="{{ product_data.price }}">
+              {{ product_data.price }}
+            </span>
+            Tk
+          </td>
+        </tr>
+        <tr>
+          <td>Quantity</td>
+          <td>
+            <div class="quantity-container">
+              <button
+                type="button"
+                class="quantity-button decrement"
+                onclick="changeQuantity('{{ product_id }}', -1)"
+              >
+                -
+              </button>
+              <input
+                type="text"
+                name="quantity_{{ product_id }}"
+                id="quantity_{{ product_id }}"
+                value="1"
+                class="quantity-input"
+                readonly
+              />
+              <button
+                type="button"
+                class="quantity-button increment"
+                onclick="changeQuantity('{{ product_id }}', 1)"
+              >
+                +
+              </button>
+                    </div>
+                  </td>
+                </tr>
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td colspan="2" class="centered-text">Your cart is empty.</td>
+              </tr>
+            {% endif %}
             <tr>
               <td>Subtotal</td>
               <td id="subtotal">
-                {% if product.discount_price %} {{ product.discount_price }} Tk
-                {% else %} {{ product.price }} Tk {% endif %}
+                <span id="subtotal">{{ subtotal|floatformat:"2" }} Tk</span>
               </td>
             </tr>
-            <tr>
               <td>Shipping</td>
               <td class="shipping-cost">
                 <div class="radio-group">
@@ -289,13 +300,10 @@
                   </div>
                 </div>
               </td>
-            </tr>
+
             <tr>
               <td>Total</td>
-              <td id="total">
-                {% if product.discount_price %} {{ product.discount_price }} Tk
-                {% else %} {{ product.price }} Tk {% endif %}
-              </td>
+              <td id="total"></td>
             </tr>
           </table>
         </div>
@@ -311,6 +319,7 @@
     </div>
   </div>
 </form>
+
 
   <!--:::::Order Form and Billing Address Ends:::::::-->
 
