@@ -69,7 +69,6 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'Homepage.context_processors.banner',
-                'Homepage.context_processors.product',
                 'Homepage.context_processors.businessinfo',
                 'Homepage.context_processors.frontend_setting',
                 'Homepage.context_processors.last_orders',
