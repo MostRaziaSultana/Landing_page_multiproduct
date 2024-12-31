@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import FeaturesSection,Feature,Product,Banner,BusinessInfo,\
-    FrontendSetting,FAQ,OrderDetails,BillingDetails,SiteSettings
+    FrontendSetting,FAQ,OrderDetails,BillingDetails,SiteSettings,OrderItem
 
 from django.utils.html import format_html
 
@@ -62,11 +62,20 @@ class BillingDetailsAdmin(admin.ModelAdmin):
 
 @admin.register(OrderDetails)
 class OrderDetailsAdmin(admin.ModelAdmin):
-    list_display = ('product_name', 'product_price', 'quantity', 'subtotal', 'shipping_cost', 'total', 'payment_method', 'billing_details')
-    search_fields = ('product_name', 'billing_details__name')
-    list_filter = ('payment_method',)
+    list_display = ('id', 'billing_details', 'subtotal', 'total', 'shipping_cost', 'payment_method', 'date')
+    list_filter = ('payment_method', 'date')
+    search_fields = ('billing_details__name', 'billing_details__phone_number')
+    date_hierarchy = 'date'
+
+
+@admin.register(OrderItem)
+class OrderItemAdmin(admin.ModelAdmin):
+    list_display = ('id', 'order', 'product', 'quantity','total_price')
+    list_filter = ('order', 'product')
+    search_fields = ('order__billing_details__name', 'product__title')
 
 
 @admin.register(SiteSettings)
 class SiteSettings(admin.ModelAdmin):
-    list_display = ('site_name', 'gtm_id', 'copyright_year')
+    list_display = ('site_name', 'gtm_id', 'copyright_year', 'keywords', 'description', 'facebook_domain_verification_id',
+              'google_site_verification_id')
