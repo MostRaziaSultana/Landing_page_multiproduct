@@ -75,22 +75,27 @@ class BillingDetails(models.Model):
         verbose_name_plural = "Billing_Details"
 
 class OrderDetails(models.Model):
-    product_name = models.CharField(max_length=255, verbose_name="Product Name")
-    product_price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Product Price")
-    quantity = models.PositiveIntegerField(default=1, verbose_name="Quantity")
-    subtotal = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Subtotal")
     shipping_cost = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Shipping Cost")
+    subtotal = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Subtotal",null=True)
     total = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Total")
     billing_details = models.ForeignKey(BillingDetails, on_delete=models.CASCADE, related_name="orders")
     payment_method = models.CharField(max_length=50, default="Cash on Delivery", verbose_name="Payment Method")
     date = models.DateField(default=now, verbose_name="Order Date")
 
     def __str__(self):
-        return f"Order for {self.product_name} - {self.total} Tk"
+        return f"Order #{self.id} - Total: {self.total} Tk"
 
     class Meta:
         verbose_name = "Order Detail"
         verbose_name_plural = "Order Details"
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(OrderDetails, on_delete=models.CASCADE, related_name='order_items')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1, verbose_name="Quantity")
+    total_price = models.DecimalField(max_digits=10, decimal_places=2,null=True)
+    def __str__(self):
+        return f"{self.product.title} - {self.quantity} pcs"
 
 
 
@@ -126,5 +131,12 @@ class SiteSettings(models.Model):
     gtm_id = models.CharField(max_length=20, blank=True, null=True,
                               help_text="Google Tag Manager ID (e.g., GTM-XXXXXX)")
     copyright_year = models.PositiveIntegerField(null=True, blank=True)
+    keywords = models.TextField(blank=True,null=True,help_text="Meta keywords for SEO, separated by commas.")
+    description = models.TextField(blank=True,null=True,help_text="Meta description for SEO.")
+    facebook_domain_verification_id = models.CharField(max_length=255,blank=True,null=True,
+                                                       help_text="Facebook domain verification ID.")
+    google_site_verification_id = models.CharField(max_length=255,blank=True,null=True,
+                                                   help_text="Google site verification ID.")
+
     def __str__(self):
         return self.site_name
