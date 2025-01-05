@@ -1,0 +1,172 @@
+{% extends "authority_base.html" %}
+
+{% block title %} {{title}} {% endblock title %}
+
+{% block body %}
+<div class="container-fluid pt-4 px-4" style="margin-bottom: 30px;">
+    <div class="row g-4">
+
+           <!-- Total Admin Block -->
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-light p-4 rounded box-shadow d-flex align-items-center justify-content-between shadow-lg" style="box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); padding-left: unset !important;">
+                <div class="ms-3">
+                    <p class="mb-2 text-dark">Total Admin</p>
+                    <h6 class="mb-0 text-dark">{{ total_admin }}</h6>
+                </div>
+                <div class="icon-box">
+                    <i class="fa-solid fa-user text-white"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Orders Block -->
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-white text-dark rounded d-flex align-items-center justify-content-between p-4 box-shadow shadow-lg" style="box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); padding-left: unset !important;">
+                <div class="ms-3">
+                    <p class="mb-2 text-dark">Total Orders</p>
+                    <h6 class="mb-0 text-dark">{{ total_orders }}</h6>
+                </div>
+                <div class="icon-box">
+                    <i class="fa-solid fa-cart-plus text-white"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Features Block -->
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-white text-dark rounded d-flex align-items-center justify-content-between p-4 box-shadow shadow-lg" style="box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); padding-left: unset !important;">
+                <div class="ms-3">
+                    <p class="mb-2 text-dark">Total Features</p>
+                    <h6 class="mb-0 text-dark">{{ total_feature }}</h6>
+                </div>
+                <div class="icon-box">
+                    <i class="fa-solid fa-star fa-2x text-white"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total FAQ Block -->
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-white text-dark rounded d-flex align-items-center justify-content-between p-4 box-shadow shadow-lg" style="box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); padding-left: unset !important;">
+                <div class="ms-3">
+                    <p class="mb-2 text-dark">Total FAQ</p>
+                    <h6 class="mb-0 text-dark">{{ total_faq }}</h6>
+                </div>
+                <div class="icon-box">
+                    <i class="fa-solid fa-question-circle fa-2x text-white"></i>
+                </div>
+            </div>
+        </div>
+
+           <!-- Total todays order Block -->
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-white text-dark rounded d-flex align-items-center justify-content-between p-4 box-shadow shadow-lg" style="box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); padding-left: unset !important;">
+                <div class="ms-3">
+                    <p class="mb-2 text-dark">Today's Orders</p>
+                    <h6 class="mb-0 text-dark">{{ todays_orders }}</h6>
+                </div>
+                <div class="icon-box">
+                    <i class="fa-solid fa-calendar-day fa-2x text-white"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Banners Block -->
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-white text-dark rounded d-flex align-items-center justify-content-between p-4 box-shadow shadow-lg" style="box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); padding-left: unset !important;">
+                <div class="ms-3">
+                    <p class="mb-2 text-dark">Total Banners</p>
+                    <h6 class="mb-0 text-dark">{{ total_banner }}</h6>
+                </div>
+                <div class="icon-box">
+                    <i class="fa-solid fa-image fa-2x text-white"></i>
+                </div>
+            </div>
+        </div>
+
+            <!-- Total Products Block -->
+            <div class="col-sm-6 col-xl-3">
+                <div class="bg-white text-dark rounded d-flex align-items-center justify-content-between p-4 box-shadow shadow-lg" style="box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); padding-left: unset !important;">
+                    <div class="ms-3">
+                        <p class="mb-2 text-dark">Total Products</p>
+                        <h6 class="mb-0 text-dark">{{ total_products }}</h6>
+                    </div>
+                    <div class="icon-box">
+                        <i class="fa-solid fa-box-open fa-2x text-white"></i>
+                    </div>
+                </div>
+            </div>
+
+        <!-- Total Social Media Block -->
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-white text-dark rounded d-flex align-items-center justify-content-between p-4 box-shadow shadow-lg" style="box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); padding-left: unset !important;">
+                <div class="ms-3">
+                    <p class="mb-2 text-dark">Social Media</p>
+                    <h6 class="mb-0 text-dark">{{ total_social_media }}</h6>
+                </div>
+                <div class="icon-box">
+                    <i class="fa-solid fa-thumbs-up fa-2x text-white"></i>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+    </div>
+</div>
+
+
+<!-- Recent Sales Start -->
+<div class="container-fluid px-4">
+    <div class="bg-light text-center rounded p-4 shadow-lg mb-4">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <h6 class="mb-0" style="color: #555;">Last 10 Orders</h6>
+            <a href="{% url 'authority:order_list' %}" class="order-now-btn">Show All</a>
+        </div>
+
+        <!-- Table Section -->
+        <div class="table-responsive">
+            <table class="table text-start align-middle table-bordered table-hover mb-0 shadow-sm">
+                <thead class="table-white">
+                    <tr class="text-grey">
+                        <th scope="col">Date</th>
+                        <th scope="col">User</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Total</th>
+                        <th scope="col">View</th>
+                        <th scope="col">Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in latest_orders %}
+                        <tr>
+                            <td>{{ order.date }}</td>
+                            <td>
+                                Name: {{ order.billing_details.name }}<br>
+                                Phone: {{ order.billing_details.phone_number }}<br>
+                                City: {{ order.billing_details.city }}
+                            </td>
+                            <td class="text-center">{{ order.total_quantity }}</td>
+                            <td>&#2547; {{ order.total }}</td>
+                            <td>
+                                <a class="order-now-btn btn btn-sm btn-primary" href="{% url 'authority:order_details' order.id %}">View</a>
+                            </td>
+                            <td class="text-center">
+                                <form method="post" action="{% url 'authority:delete_order' order.id %}" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this order?');">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- Recent Sales End -->
+
+{% endblock body %}

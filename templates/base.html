@@ -73,17 +73,22 @@
 <div class="container">
     <div class="row box1">
         <!--:::::About:::::::-->
-        <div class="content col-6">
+        <div class="content">
             <h1>{{ banner.banner_title }}</h1>
             <p>{{ banner.banner_description }}</p>
-            <a href="#order" class="order-now-btn hide-on-mobile">এখানে অর্ডার করুন</a>
         </div>
-        <div class="video col-6">
+        <div class="video">
              {% if banner.banner_video_link %}
             <iframe src="{{ banner.banner_video_link }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
             {% else %}
                 <p>No video available.</p>
             {% endif %}
+            <div class="order-now-nav">
+            <a href="#order" class="order-now-btn hide-on-mobile">এখানে অর্ডার করুন</a>
+             </div>
+             <div class="order-now-container">
+                <a href="#order" class="order-now-btn">এখানে অর্ডার করুন</a>
+            </div>
         </div>
         <!--:::::About Ends:::::::-->
     </div>
@@ -97,7 +102,7 @@
         <div class="features-container">
             {% for feature in section.features.all %}
             <div class="feature-item">
-                <img src="{{ feature.image.url }}" alt="Icon">
+<!--                <img src="{{ feature.image.url }}" alt="Icon">-->
                 <p>{{ feature.title }}</p>
             </div>
              {% endfor %}
@@ -128,20 +133,43 @@
 
    <!--:::::FAQ ends:::::::-->
 
+   <!--:::::Sticky social media:::::::-->
+<div class="chat-buttons-container">
+    <div class="toggle-button">
+        <img src="{% static 'images/chat.png' %}" alt="Click to open chat" id="toggle-chat-image" onclick="toggleChatButtons()" style="cursor: pointer; width: 50px; height: 50px;" />
+    </div>
+
+    <div class="chat-buttons" style="display: none;">
+        <!-- WhatsApp Button -->
+        <div class="whatsapp-button">
+            <a aria-label="Chat on WhatsApp" href="https://wa.me/{{ businessinfo.whatsapp }}" target="_blank">
+                <img src="{% static 'images/whtsapp.png' %}" alt="WhatsApp" width="40px" height="40px" />
+            </a>
+        </div>
+
+        <!-- Messenger Button -->
+        <div class="messenger-button">
+            <a aria-label="Chat on Messenger" href="{{ businessinfo.messenger }}" target="_blank">
+                <img src="{% static 'images/Facebook_Messenger_logo_2020.svg.webp' %}" alt="Messenger" width="40px" height="40px" />
+            </a>
+        </div>
+    </div>
+</div>
+     <!--:::::Sticky social media ends:::::::-->
 
 
-<div class="row products">
+<div class="row products" id="products">
     <h2 class="titl">Our Products</h2>
      {% for i in products %}
     <div class="product-card">
         <div class="product-image">
-            <a href="{{ i.image.url }}">
+             <a href="#" data-bs-toggle="modal" data-bs-target="#productModal{{ i.id }}">
                 <img src="{{ i.image.url }}" alt="Product Image">
             </a>
         </div>
         <div class="product_desc_info">
             <h4>
-                <a class="product_name" href="{{ i.image.url }}">{{ i.title }}</a>
+                <a class="product_name" href="{{ i.image.url }}">{{ i.title|truncatechars:22}}</a>
             </h4>
             <div class="price-box">
                 {% if i.discount_price %}
@@ -152,12 +180,51 @@
                 {% endif %}
             </div>
              <div class="product-actions">
-<!--                <a href="#" class="order-now-btn">Buy Now</a>-->
-               <a href="{% url 'home' %}?product_id={{ i.id }}&session_key={{ request.session.session_key }}" class="add-to-cart-btn">Add to Cart</a>
+                 <form action="{% url 'home' %}#order" method="post">
+                     <input type="hidden" name="product_id" value="{{ i.id }}">
+                      {% csrf_token %}
+                <button style="display: block; width: 100%;" id="order-now" class="add-to-cart theme-color" name="order_now" value="true" type="submit">Order Now</button>
+                    </form>
+                <a href="javascript:void(0);"
+                   class="add-to-cart-btn btn btn-primary d-flex align-items-center justify-content-center"
+                   onclick="addToCart('{{ i.id }}')">
+                    <i class="fas fa-cart-plus me-2"></i> Add to Cart
+                </a>
             </div>
         </div>
     </div>
-      {% endfor %}
+  <!-- Modal -->
+    <div class="modal fade" id="productModal{{ i.id }}" tabindex="-1" aria-labelledby="productModalLabel{{ i.id }}" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                 <div class="modal-header no-border">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img src="{{ i.image.url }}" alt="{{ i.title }}" class="img-fluid mb-3 modal-img-medium">
+                    <h3 class="modal-title text-start bold-title" id="productModalLabel{{ i.id }}">{{ i.title }}</h3>
+                     <div class="d-flex justify-content-between align-items-center mb-3">
+                       <div class="price-box d-flex justify-content-start align-items-center">
+                            {% if i.discount_price %}
+                                <span class="new-price me-3" style="font-size: 1.5rem; font-weight: bold;">Tk {{ i.discount_price|floatformat:"0" }}</span>
+                                <span  style="font-size: 1.2rem; text-decoration: line-through; color: #ff0000;">Tk {{ i.price|floatformat:"0" }}</span>
+                            {% else %}
+                                <span class="new-price" style="font-size: 1.5rem; font-weight: bold;">Tk {{ i.price|floatformat:"0" }}</span>
+                            {% endif %}
+                        </div>
+
+                        <form action="{% url 'home' %}#order" method="post">
+                     <input type="hidden" name="product_id" value="{{ i.id }}">
+                      {% csrf_token %}
+                <button style="display: block; width: 100%;" id="order-now" class="btn btn-success" name="order_now" value="true" type="submit">Order Now</button>
+                    </form>
+                     </div>
+                    <p>{{ i.description }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
 </div>
 
 
@@ -167,101 +234,61 @@
 <form action="{% url 'home' %}" method="POST" class="form-container">
   <div class="billing-details" id="order">
     <h2 class="centered-text">
-      অর্ডার করতে আপনার সঠিক তথ্য দিয়ে নিচের ফর্মটি সম্পূর্ণ পূরন করুন।<br />
+      অর্ডার করতে আপনার সঠিক তথ্য দিয়ে নিচের ফর্মটি পূরণ করুন।<br />
       (আগে থেকে কোন টাকা দেয়া লাগবে না। প্রোডাক্ট হাতে পাবার পর টাকা দিবেন)
     </h2>
     <div class="row order-form">
+      {% csrf_token %}
+      <input type="hidden" name="shipping_cost" id="shipping_cost" value="" />
+
+      <!-- Billing Details -->
       <div class="form1 col-md-6 col-12 col-sm-12">
-        {% csrf_token %}
-        <input type="hidden" name="shipping_cost" id="shipping_cost" value="" />
         <h4>Billing Details</h4>
-        <label for="name">Name:</label><br />
-        <input
-          type="text"
-          name="name"
-          id="name"
-          placeholder="Enter your name"
-          required
-        /><br />
+        <label for="name">Name:</label>
+        <input type="text" name="name" id="name" placeholder="Enter your name" required />
 
-        <label for="phone">Phone:</label><br />
-        <input
-          type="tel"
-          name="phone"
-          id="phone"
-          placeholder="Enter your phone number"
-          required
-        /><br />
+        <label for="phone">Phone:</label>
+        <input type="tel" name="phone" id="phone" placeholder="Enter your phone number" required />
 
-        <label for="city">City:</label><br />
-        <input
-          type="text"
-          name="city"
-          id="city"
-          placeholder="Enter your city"
-          required
-        /><br />
+        <label for="city">City:</label>
+        <input type="text" name="city" id="city" placeholder="Enter your city" required />
 
-        <label for="address">Address:</label><br />
-        <textarea
-          name="address"
-          id="address"
-          placeholder="Enter your address"
-          rows="3"
-          required
-        ></textarea><br />
+        <label for="address">Address:</label>
+        <textarea name="address" id="address" placeholder="Enter your address" rows="3" required></textarea>
       </div>
 
+      <!-- Order Details -->
       <div class="form2 col-md-6 col-12 col-sm-12">
-<h4>Order Details</h4>
-<div class="order-details">
-  <table class="details">
-    {% if cart %}
-      {% for product_id, product_data in cart.items %}
-        <tr>
-          <td>
-            <div style="display: flex; align-items: center">
-              <img
-                src="{{ product_data.image }}"
-                alt="product-img"
-                style="width: 30px; height: 30px; margin-right: 10px"
-              />
-              <span>{{ product_data.title }}</span>
-            </div>
-          </td>
-          <td style="display: flex">
-            <span id="price_{{ product_id }}" data-price="{{ product_data.price }}">
-              {{ product_data.price }}
-            </span>
-            Tk
-          </td>
-        </tr>
-        <tr>
-          <td>Quantity</td>
-          <td>
-            <div class="quantity-container">
-              <button
-                type="button"
-                class="quantity-button decrement"
-                onclick="changeQuantity('{{ product_id }}', -1)"
-              >
-                -
-              </button>
-              <input
-                type="text"
-                name="quantity_{{ product_id }}"
-                id="quantity_{{ product_id }}"
-                value="1"
-                class="quantity-input"
-                readonly
-              />
-              <button
-                type="button"
-                class="quantity-button increment"
-                onclick="changeQuantity('{{ product_id }}', 1)"
-              >
-                +
-              </button>
+        <h4>Order Details</h4>
+        <div class="order-details">
+          <table class="details">
+            {% if cart %}
+              {% for product_id, product_data in cart.items %}
+                <tr>
+                   <td>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <button type="button" class="remove-button" onclick="removeProduct('{{ product_id }}')" style="padding: 4px 8px; background-color: #088178; color: white; border: none; border-radius: 3px; cursor: pointer;">
+                               <i class="fas fa-times"></i>
+                            </button>
+                            <img src="{{ product_data.image }}" alt="product-img" style="width: 30px; height: 30px;" />
+                            <span>{{ product_data.title }}</span>
+                        </div>
+                    </td>
+
+                    <td style="display: flex">
+                        <span id="total_price_{{ product_id }}" data-price="{{ product_data.price }}">
+                            {{ product_data.price }} Tk
+                        </span>
+                    </td>
+                </tr>
+
+                <tr>
+                  <td>Quantity</td>
+                  <td>
+                    <div class="quantity-container">
+                      <button type="button" class="quantity-button decrement" onclick="changeQuantity('{{ product_id }}', -1)">-</button>
+                      <input type="text" name="quantity_{{ product_id }}" id="quantity_{{ product_id }}" value="{{ product_data.quantity}}" class="quantity-input" readonly />
+                      <button type="button" class="quantity-button increment" onclick="changeQuantity('{{ product_id }}', 1)">+</button>
                     </div>
                   </td>
                 </tr>
@@ -271,54 +298,31 @@
                 <td colspan="2" class="centered-text">Your cart is empty.</td>
               </tr>
             {% endif %}
+            <tr><td>Subtotal</td><td id="subtotal"></td></tr>
             <tr>
-              <td>Subtotal</td>
-              <td id="subtotal">
-                <span id="subtotal">{{ subtotal|floatformat:"2" }} Tk</span>
-              </td>
-            </tr>
               <td>Shipping</td>
               <td class="shipping-cost">
                 <div class="radio-group">
                   <div class="radio-item">
-                    <input
-                      type="radio"
-                      name="shipping"
-                      value="50"
-                      onchange="updateTotal()"
-                    />
+                    <input type="radio" name="shipping" value="50" onchange="updateSubtotalAndTotal()" />
                     <label class="radio-title">ঢাকার ভিতরে: 50 টাকা</label>
                   </div>
                   <div class="radio-item">
-                    <input
-                      type="radio"
-                      name="shipping"
-                      value="100"
-                      onchange="updateTotal()"
-                    />
+                    <input type="radio" name="shipping" value="100" onchange="updateSubtotalAndTotal()" />
                     <label class="radio-title">ঢাকার বাহিরে: 100 টাকা</label>
                   </div>
                 </div>
               </td>
-
-            <tr>
-              <td>Total</td>
-              <td id="total"></td>
             </tr>
+            <tr><td>Total</td><td id="total">0 Tk</td></tr>
           </table>
         </div>
-        <button
-          type="submit"
-          id="submit-button"
-          class="btn btn-primary"
-          disabled
-        >
-          <span>অর্ডার নিশ্চিত করুন</span>
-        </button>
+        <button type="submit" id="submit-button" class="btn btn-primary" disabled>অর্ডার নিশ্চিত করুন</button>
       </div>
     </div>
   </div>
 </form>
+
 
 
   <!--:::::Order Form and Billing Address Ends:::::::-->
@@ -338,7 +342,7 @@
             Copyright © {{ site_settings.copyright_year }} <strong>{{ businessinfo.company_name }}</strong>. All rights reserved. Powered by <a href="https://www.emanagerit.com/" target="_blank"><strong>eManager</strong></a>
         </div>
         <div class="social-media col-12 col-md-2">
-            <a href="https://wa.me/{{ businessinfo.whatsapp}}?text=Hello" target="_blank" class="social-icon">
+            <a href="https://wa.me/{{ businessinfo.whatsapp}}" target="_blank" class="social-icon">
                 <i class="fab fa-whatsapp"></i>
             </a>
             <a href="{{ businessinfo.facebook }}" class="social-icon">
@@ -362,20 +366,19 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.min.js" integrity="sha512-ykZ1QQr0Jy/4ZkvKuqWn4iF3lqPZyij9iRv6sGqLRdTPkY69YX6+7wvVGmsdBbiIfN/8OdsI7HABjvEok6ZopQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
-    // Get all radio buttons with the name 'shipping'
-const shippingOptions = document.getElementsByName('shipping');
-
-// Add an event listener to each radio button
-shippingOptions.forEach(option => {
-    option.addEventListener('change', function () {
-        // Get the selected value
-        const shippingCost = document.querySelector('input[name="shipping"]:checked').value;
-
-        // Update the shipping_cost field
-        const shippingCostField = document.getElementById('shipping_cost');
-        shippingCostField.value = shippingCost;
-    });
-});
+function removeProduct(productId) {
+    fetch(`?remove=true&product_id=${productId}`)
+        .then((response) => {
+            if (response.ok) {
+                alert("Product remove from cart?");
+                location.reload();
+            } else {
+                response.text().then((message) => alert(message));
+            }
+        })
+        .catch((error) => console.error('Error:', error));
+}
 </script>
+
 </body>
 </html>

@@ -51,7 +51,7 @@ class ProductAdmin(admin.ModelAdmin):
 
 @admin.register(BusinessInfo)
 class BusinessInfoAdmin(admin.ModelAdmin):
-    list_display = ('company_name', 'phone_no', 'email', 'whatsapp', 'facebook','address')
+    list_display = ('company_name', 'phone_no', 'email', 'whatsapp', 'facebook','messenger','address')
     search_fields = ('company_name', 'email', 'phone_no')
 
 

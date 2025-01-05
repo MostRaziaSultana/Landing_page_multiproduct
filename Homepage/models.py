@@ -31,7 +31,6 @@ class FeaturesSection(models.Model):
 class Feature(models.Model):
     section = models.ForeignKey(FeaturesSection, on_delete=models.CASCADE, related_name='features')
     title = models.CharField(max_length=255)
-    image = models.ImageField(upload_to='features/')
 
     def __str__(self):
         return self.title
@@ -105,6 +104,7 @@ class BusinessInfo(models.Model):
     email = models.EmailField()
     whatsapp = models.CharField(max_length=15, null=True, blank=True)
     facebook = models.URLField(null=True, blank=True)
+    messenger = models.URLField(null=True, blank=True)
     address = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):

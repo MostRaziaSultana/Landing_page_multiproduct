@@ -1,0 +1,115 @@
+{% extends 'authority_base.html' %}
+{% load static %}
+
+{% block title %} Order Details {% endblock title %}
+
+{% block body %}
+
+<style>
+    body, .container, .d-flex, .table, p, td, th, hr, button, img {
+        user-select: none !important;
+    }
+    .customer-section {
+        margin-bottom: 8px; /* Reduced margin */
+    }
+    .section-divider {
+        border-top: 1px dotted #000;
+        margin: 8px 0; /* Reduced gap around hr */
+    }
+    .business-info p {
+        margin: 2px 0; /* Reduced gap between phone number and address */
+        font-size: 0.9rem;
+    }
+    .logo {
+        margin-bottom: 5px; /* Reduce space below logo */
+    }
+</style>
+
+<div class="container print" id="print" style="max-width: 70%; margin-top: 11px; margin-bottom: 4rem; box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1); padding: 20px; background-color: #fff; font-family: 'Arial', sans-serif;">
+
+    <div class="d-flex justify-content-between align-items-start" style="padding-top: 10px; padding-bottom: 10px;">
+        <div>
+            <img src="{{ frontend_setting.logo.url }}" alt="Logo" class="logo" style="max-height: 50px;">
+            <div class="business-info">
+                <p>{{ businessinfo.phone_no }}</p>
+                <p>{{ businessinfo.address }}</p>
+            </div>
+        </div>
+
+        <div>
+            <button class="btn no-print mb-2" target="_blank" onclick="printDiv('print')">
+                <i class="bi bi-printer"></i> Print
+            </button>
+            <p style="font-size: 0.9rem; margin-top: 6px;">{{ order.date|date:"Y-m-d" }}</p>
+        </div>
+    </div>
+
+    <hr class="section-divider">
+
+    <div class="d-flex flex-column customer-section" style="padding-top: 10px; padding-bottom: 10px;">
+        <p style="font-size: 1rem; font-weight: bold; margin-bottom: 5px;">{{ order.billing_details.name }}</p>
+        <p style="font-size: 1rem; margin-bottom: 5px;">{{ order.billing_details.phone_number }}</p>
+        <p style="font-size: 1rem; margin-bottom: 0;">{{ order.billing_details.address }}, {{ order.billing_details.city }}</p>
+    </div>
+
+    <hr class="section-divider">
+
+   <div class="d-flex flex-column" style="margin-bottom: 1rem; padding-top: 10px; padding-bottom: 10px;">
+    {% for item in order.order_items.all %}
+    <div style="font-size: 1rem; margin-bottom: 5px;">
+        <div class="d-flex justify-content-between align-items-center">
+            <span style="flex: 1;">{{ item.product.title }}</span>
+            <span style="width: 50px; text-align: center;">{{ item.quantity }}</span>
+            <span style="width: 100px; text-align: right;">&#2547; {% if item.total_price %}{{ item.total_price|floatformat:2 }}{% else %}{{ order.subtotal|floatformat:2 }}{% endif %}</span>
+        </div>
+    </div>
+    {% empty %}
+    <div>No items in this order.</div>
+    {% endfor %}
+</div>
+
+    <hr class="section-divider">
+
+
+    <div class="table-responsive" style="display: flex; justify-content: end;">
+        <table class="table" style="font-size: 1rem; width: 25rem;">
+            <tbody>
+                <tr>
+                    <td style="text-align: left; border-bottom: none;"><strong>Subtotal</strong></td>
+                    <td style="text-align: center; border-bottom: none;"></td>
+                    <td style="text-align: right; border-bottom: none;">&#2547; {{ order.subtotal }}</td>
+                </tr>
+                <tr>
+                    <td style="text-align: left; border-bottom: none;"><strong>Shipping Charge</strong></td>
+                    <td style="text-align: center; border-bottom: none;"></td>
+                    <td style="text-align: right; border-bottom: none;">&#2547; {{ order.shipping_cost }}</td>
+                </tr>
+                <tr>
+                    <td style="text-align: left; border-bottom: none;"><strong>Total</strong></td>
+                    <td style="text-align: center; border-bottom: none;"></td>
+                    <td style="text-align: right; border-bottom: none;"><strong>&#2547; {{ order.total }}</strong></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div style="text-align: center; margin-top: 40px;">
+        <p style="font-size: 15px; color: grey;">Thank you for your order!</p>
+    </div>
+
+</div>
+
+<script>
+    function printDiv(divId) {
+         var printContents = document.getElementById(divId).innerHTML;
+         var originalContents = document.body.innerHTML;
+
+         document.body.innerHTML = printContents;
+
+         window.print();
+
+         document.body.innerHTML = originalContents;
+    }
+</script>
+
+{% endblock body %}
