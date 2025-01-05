@@ -157,7 +157,6 @@ from django.contrib import messages
 
 
 def home(request):
-    # Load static data
     sections = FeaturesSection.objects.prefetch_related('features').all()
     faqs = FAQ.objects.all()
     products = Product.objects.all()
@@ -197,6 +196,8 @@ def home(request):
         cart = request.session.get('cart', {})
         if product_id in cart:
             cart[product_id]['quantity'] += change
+            cart[product_id]['total_price'] = cart[product_id]['quantity'] * safe_float(cart[product_id]['price'])
+
             request.session['cart'] = cart
             request.session.modified = True
             return HttpResponse('Quantity updated.')
@@ -223,7 +224,7 @@ def home(request):
 
         request.session['cart'] = cart
         request.session.modified = True
-        return HttpResponse('Product added to cart.')
+        return JsonResponse(cart)
 
     if 'order_now' in request.POST:
         product_id = request.POST.get('product_id')
@@ -284,7 +285,6 @@ def home(request):
                     total_price=total_price,
                 )
 
-            # Clear cart and confirm success
             request.session['cart'] = {}
             messages.success(request, "Order created successfully!")
             return redirect('home')
@@ -293,7 +293,6 @@ def home(request):
             messages.error(request, f"An error occurred: {str(e)}")
             return redirect('home')
 
-    # Retrieve cart data for rendering
     cart = request.session.get('cart', {})
     return render(request, 'base.html', {
         'sections': sections,

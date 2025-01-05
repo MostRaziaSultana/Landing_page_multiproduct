@@ -190,7 +190,6 @@
     z-index: 1000;
 }
 
-/* Styling for chat buttons when shown */
 .chat-buttons {
     display: none;
     flex-direction: row-reverse;
@@ -199,7 +198,6 @@
     animation: slideIn 0.5s forwards;
 }
 
-/* Animation for sliding buttons from right to left */
 @keyframes slideIn {
     0% {
         transform: translateX(100%);
@@ -217,10 +215,6 @@
 .toggle-button img {
     cursor: pointer;
 }
-
-
-
-
 
 /* FAQ */
 .faq {
