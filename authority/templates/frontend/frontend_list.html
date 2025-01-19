@@ -1,0 +1,48 @@
+{% extends 'authority_base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %} {{ title }} {% endblock %}
+
+{% block body %}
+<div class="bg-light rounded h-100 p-4 shadow-sm">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h6 class="title-custom">Frontend Settings</h6>
+        {% if not settings %}
+        <a href="{% url 'authority:add_frontend_setting' %}" class="order-now-btn">Add Setting</a>
+        {% endif %}
+    </div>
+
+    {% if settings %}
+    <div class="table-responsive">
+        <table class="table text-start align-middle table-bordered table-hover mb-0 table-custom">
+            <thead class="table-white">
+                <tr class="text-grey">
+                    <th scope="col">Logo</th>
+                    <th scope="col">Favicon</th>
+                    <th scope="col" class="text-center">Update</th>
+                    <th scope="col" class="text-center">Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><img src="{{ settings.logo.url }}" alt="Logo" width="100"></td>
+                    <td><img src="{{ settings.favicon.url }}" alt="Favicon" width="25"></td>
+                    <td class="text-center">
+                        <a class="order-now-btn" href="{% url 'authority:update_frontend_setting' settings.pk %}">Update</a>
+                    </td>
+                    <td class="text-center">
+                        <form method="post" action="{% url 'authority:delete_frontend_setting' settings.pk %}" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this setting?');">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+        <div class="text-center text-muted">No settings found.</div>
+    {% endif %}
+</div>
+{% endblock %}

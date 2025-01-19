@@ -1,0 +1,56 @@
+{% extends 'authority_base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %} {{ title }} {% endblock %}
+
+{% block body %}
+<div class="bg-light rounded h-100 p-4 shadow-sm">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h6 class="title-custom">Banners</h6>
+        {% if not banner %}
+            <a href="{% url 'authority:add_banner' %}" class="order-now-btn">Add Banner</a>
+        {% endif %}
+    </div>
+
+    {% if banner %}
+    <div class="table-responsive">
+        <table class="table text-start align-middle table-bordered table-hover mb-0 table-custom">
+            <thead class="table-white">
+                <tr class="text-grey">
+                    <th scope="col">Banner Title</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Video Link</th>
+                    <th scope="col" class="text-center">Update</th>
+                    <th scope="col" class="text-center">Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ banner.banner_title }}</td>
+                    <td>{{ banner.banner_description }}</td>
+                    <td>
+                        {% if banner.banner_video_link %}
+                            <a href="{{ banner.banner_video_link }}" target="_blank">Watch Video</a>
+                        {% else %}
+                            No video available
+                        {% endif %}
+                    </td>
+                    <td class="text-center">
+                        <a class="order-now-btn" href="{% url 'authority:update_banner' banner.pk %}">Update</a>
+                    </td>
+                    <td class="text-center">
+                        <form method="post" action="{% url 'authority:delete_banner' banner.pk %}" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this banner?');">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+        <div class="text-center text-muted">No banners found.</div>
+    {% endif %}
+</div>
+{% endblock %}

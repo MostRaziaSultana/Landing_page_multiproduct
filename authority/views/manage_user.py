@@ -109,17 +109,28 @@ class AddAdminUserView(LoginRequiredMixin, AdminPassesTestMixin, CreateView):
 
 
 class DeleteUserView(LoginRequiredMixin, AdminPassesTestMixin, DeleteView):
+    model = User
+    template_name = 'authority/confirm_delete.html'
+    context_object_name = 'user'
+
     def post(self, request, pk):
         user = get_object_or_404(User, pk=pk)
 
+        # Prevent deletion of own account
         if user == request.user:
             messages.error(request, "You cannot delete your own account.")
             return redirect('authority:user_list')
 
-        if user.is_superuser:
-            messages.error(request, "You cannot delete a superuser.")
-            return redirect('authority:user_list')
+        if user.is_superuser and not request.user == user:
+            if request.user.is_superuser:
+                user.delete()
+                messages.success(request, "Superuser deleted successfully.")
+                return redirect('authority:user_list')
+            else:
+                messages.error(request, "You cannot delete a superuser unless you're also a superuser.")
+                return redirect('authority:user_list')
 
+        # If it's not a superuser, proceed with deletion
         user.delete()
         messages.success(request, "User deleted successfully.")
         return redirect('authority:user_list')

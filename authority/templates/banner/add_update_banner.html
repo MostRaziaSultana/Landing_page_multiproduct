@@ -1,0 +1,52 @@
+{% extends 'authority_base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}{{ title }}{% endblock title %}
+
+{% block body %}
+<div class="bg-light rounded h-100 p-4 shadow-sm">
+    <h6 class="title-custom mb-4">{{ title }}</h6>
+
+    <form method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+
+        <!-- Banner Title -->
+        <div class="row mb-3">
+            <div class="col-12">
+                <label for="id_banner_title" class="form-label">Banner Title</label>
+                {{ form.banner_title|add_class:"form-control" }}
+                {% if form.banner_title.errors %}
+                    <div class="text-danger small">{{ form.banner_title.errors.0 }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Banner Description -->
+        <div class="row mb-3">
+            <div class="col-12">
+                <label for="id_banner_description" class="form-label">Banner Description</label>
+                {{ form.banner_description|add_class:"form-control" }}
+                {% if form.banner_description.errors %}
+                    <div class="text-danger small">{{ form.banner_description.errors.0 }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Banner Video Link -->
+        <div class="row mb-3">
+            <div class="col-12">
+                <label for="id_banner_video_link" class="form-label">Banner Video Link</label>
+                {{ form.banner_video_link|add_class:"form-control" }}
+                {% if form.banner_video_link.errors %}
+                    <div class="text-danger small">{{ form.banner_video_link.errors.0 }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="d-flex justify-content-center mt-4">
+            <button type="submit" class="btn btn-primary w-50">Submit</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

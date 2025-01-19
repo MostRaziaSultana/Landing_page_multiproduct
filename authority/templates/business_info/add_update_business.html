@@ -1,0 +1,62 @@
+{% extends 'authority_base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %} {{ title }} {% endblock title %}
+
+{% block body %}
+<div class="bg-light rounded h-100 p-4">
+    <h6 class="title-custom mb-4">{{ title }}</h6>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="business-details mb-4">
+
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <label for="companyName" class="form-label">Company Name</label>
+                    {{ form.company_name|add_class:"form-control" }}
+                </div>
+                <div class="col-md-6">
+                    <label for="phoneNumber" class="form-label">Phone Number</label>
+                    {{ form.phone_no|add_class:"form-control" }}
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <label for="email" class="form-label">Email</label>
+                    {{ form.email|add_class:"form-control" }}
+                </div>
+                <div class="col-md-6">
+                    <label for="whatsapp" class="form-label">WhatsApp</label>
+                    {{ form.whatsapp|add_class:"form-control" }}
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <label for="facebook" class="form-label">Facebook</label>
+                    {{ form.facebook|add_class:"form-control" }}
+                </div>
+                 <div class="col-md-6">
+                    <label for="messenger" class="form-label">Messenger</label>
+                    {{ form.messenger|add_class:"form-control" }}
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col">
+                    <label for="address" class="form-label">Address</label>
+                    {{ form.address|add_class:"form-control" }}
+                </div>
+            </div>
+        </div>
+
+        <div class="d-grid gap-2 col-6 mx-auto">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </form>
+</div>
+{% endblock body %}

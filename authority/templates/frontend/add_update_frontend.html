@@ -1,0 +1,72 @@
+{% extends 'authority_base.html' %}
+{% load widget_tweaks %}
+
+{% block title %} {{ title }} {% endblock %}
+
+{% block body %}
+<div class="bg-light rounded h-100 p-4 shadow-sm">
+    <h6 class="title-custom">{{ title }}</h6>
+    <div class="mt-4">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3">
+                {{ form.logo.label_tag }}
+                <div class="mb-2">
+                    {% if form.instance.logo and form.instance.logo.url %}
+                        <img id="logo-preview" src="{{ form.instance.logo.url }}" alt="Logo Preview" style="max-width: 150px; max-height: 150px; display: block;" />
+                    {% else %}
+                        <img id="logo-preview" src="#" alt="Logo Preview" style="max-width: 150px; max-height: 150px; display: none;" />
+                    {% endif %}
+                </div>
+                {{ form.logo|add_class:"form-control" }}
+            </div>
+            <div class="mb-4">
+                {{ form.favicon.label_tag }}
+                <div class="mb-2">
+                    {% if form.instance.favicon and form.instance.favicon.url %}
+                        <img id="favicon-preview" src="{{ form.instance.favicon.url }}" alt="Favicon Preview" style="max-width: 150px; max-height: 150px; display: block;" />
+                    {% else %}
+                        <img id="favicon-preview" src="#" alt="Favicon Preview" style="max-width: 150px; max-height: 150px; display: none;" />
+                    {% endif %}
+                </div>
+                {{ form.favicon|add_class:"form-control" }}
+            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+    </div>
+</div>
+
+<script>
+
+    document.querySelector('input[name="logo"]').addEventListener('change', function(event) {
+        const logoPreview = document.getElementById('logo-preview');
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                logoPreview.src = e.target.result;
+                logoPreview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        } else {
+            logoPreview.style.display = 'none';
+        }
+    });
+
+
+    document.querySelector('input[name="favicon"]').addEventListener('change', function(event) {
+        const faviconPreview = document.getElementById('favicon-preview');
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                faviconPreview.src = e.target.result;
+                faviconPreview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        } else {
+            faviconPreview.style.display = 'none';
+        }
+    });
+</script>
+{% endblock %}

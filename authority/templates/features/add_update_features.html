@@ -1,0 +1,109 @@
+{% extends 'authority_base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}{{ title }}{% endblock title %}
+
+{% block body %}
+<div class="bg-light rounded h-100 p-4 shadow-sm">
+    <h6 class="mb-4 title-custom">{{ title }}</h6>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <!-- Section Details -->
+        <div class="mb-4">
+            <h5>Section Details</h5>
+            {{ form.title|add_class:"form-control" }}
+        </div>
+
+        <h6 class="mb-4">Features</h6>
+        <div class="row mb-4">
+            <div class="col">
+                {{ feature_formset.management_form }}
+                <div id="variation-forms">
+                    {% for form in feature_formset %}
+                        <div class="variation-form mb-3 border p-3 rounded">
+                            <div class="row align-items-center">
+                                <div class="col-6">
+                                    {{ form.title.label_tag }}
+                                    {{ form.title|add_class:"form-control" }}
+                                </div>
+                                <div class="col-2 text-end">
+                                    {{ form.DELETE|add_class:"d-none" }}
+                                    <button type="button" class="btn btn-danger remove-variation">Remove</button>
+                                </div>
+                            </div>
+                            {{ form.id }}
+                        </div>
+                    {% endfor %}
+                </div>
+                <button type="button" class="btn btn-secondary add-variation">Add Feature</button>
+            </div>
+        </div>
+
+        <div class="d-grid gap-2 col-6 mx-auto">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    let variationIndex = parseInt('{{ feature_formset.total_form_count }}', 10);
+
+    document.querySelectorAll('.remove-variation').forEach(button => {
+        button.addEventListener('click', function() {
+            const variationForm = this.closest('.variation-form');
+            if (variationForm) {
+                const checkbox = variationForm.querySelector('input[type="checkbox"]');
+                if (checkbox) {
+                    checkbox.checked = true;
+                }
+                variationForm.style.display = 'none';
+            }
+        });
+    });
+
+    document.querySelector('.add-variation').addEventListener('click', function() {
+        const lastVariationForm = document.querySelector('#variation-forms .variation-form:last-child');
+        if (!lastVariationForm) {
+            return;
+        }
+        const newVariation = lastVariationForm.cloneNode(true);
+
+        newVariation.querySelectorAll('input, select').forEach(input => {
+            const newName = input.name.replace(/-\d+-/, `-${variationIndex}-`);
+            input.name = newName;
+
+            const newId = input.id.replace(/-\d+-/, `-${variationIndex}-`);
+            input.id = newId;
+
+            if (input.type !== 'hidden' && input.type !== 'checkbox') {
+                input.value = '';
+            } else if (input.type === 'checkbox') {
+                input.checked = false;
+            }
+        });
+
+        document.getElementById('variation-forms').appendChild(newVariation);
+
+        newVariation.querySelector('.remove-variation').addEventListener('click', function() {
+            const variationForm = this.closest('.variation-form');
+            if (variationForm) {
+                const checkbox = variationForm.querySelector('input[type="checkbox"]');
+                if (checkbox) {
+                    checkbox.checked = true;
+                }
+                variationForm.style.display = 'none';
+            }
+            updateTotalForms(-1);
+        });
+
+        updateTotalForms(1);
+        variationIndex++;
+    });
+
+    function updateTotalForms(change) {
+        const totalForms = document.querySelector('[name$="-TOTAL_FORMS"]');
+        totalForms.value = parseInt(totalForms.value, 10) + change;
+    }
+</script>
+{% endblock body %}

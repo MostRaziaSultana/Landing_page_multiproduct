@@ -1,0 +1,65 @@
+{% extends 'authority_base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %} {{ title }} {% endblock title %}
+
+{% block body %}
+<div class="bg-light rounded h-100 p-4">
+    <h6 class="title-custom mb-4">{{ title }}</h6>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="site-settings-details mb-4">
+
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <label for="siteName" class="form-label">Site Name</label>
+                    {{ form.site_name|add_class:"form-control" }}
+                </div>
+                <div class="col-md-6">
+                    <label for="gtmID" class="form-label">GTM ID</label>
+                    {{ form.gtm_id|add_class:"form-control" }}
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <label for="facebookDomainVerificationID" class="form-label">Facebook Domain Verification ID</label>
+                    {{ form.facebook_domain_verification_id|add_class:"form-control" }}
+                </div>
+                <div class="col-md-6">
+                    <label for="googleSiteVerificationID" class="form-label">Google Site Verification ID</label>
+                    {{ form.google_site_verification_id|add_class:"form-control" }}
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <label for="copyrightYear" class="form-label">Copyright Year</label>
+                    {{ form.copyright_year|add_class:"form-control" }}
+                </div>
+            </div>
+
+
+            <div class="row mb-4">
+                <div class="col">
+                    <label for="Keywords" class="form-label">Keywords</label>
+                    {{ form.keywords|add_class:"form-control" }}
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col">
+                    <label for="description" class="form-label">Description</label>
+                    {{ form.description|add_class:"form-control" }}
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+
+    </form>
+</div>
+{% endblock body %}
